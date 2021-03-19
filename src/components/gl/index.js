@@ -7,10 +7,10 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass'
 import { getEvent } from 'libs/mouse-event'
 
-import gradientVert from 'shaders/gradient.frag'
+import gradientVert from 'shaders/gradient.vert'
 import gradientFrag from 'shaders/gradient.frag'
 
-console.log(gradientVert)
+
 
 function enableShadow(obj){
 	obj.castShadow = true
@@ -18,7 +18,7 @@ function enableShadow(obj){
 }
 
 function toColor (color){
-	return new THREE.Color('0x' + color.substring(1).toLowerCase())
+	return new THREE.Color(color)
 }
 
 export default function WebGLViewer(){
@@ -46,7 +46,7 @@ export default function WebGLViewer(){
 		const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1, 0, 0.8)
 		renderer.addPass( bloomPass );
 
-		const light = new THREE.AmbientLight( 0xffffff);
+		const light = new THREE.AmbientLight( "E3B1B0", 1.5);
 		const directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
 		directionalLight.position.set(0.5, 1, 0.7)
 		directionalLight.castShadow = true
@@ -60,8 +60,8 @@ export default function WebGLViewer(){
 
 		const material = new THREE.ShaderMaterial( {
 				uniforms: {
-					uColorA: { value: toColor("#E3B1B0") },
-					uColorB: { value: toColor("#6558C1") }
+					uColorA: { value: toColor("#B630A9") },
+					uColorB: { value: toColor("#32008A") }
 				},
 				vertexShader: gradientVert,
 				fragmentShader: gradientFrag
