@@ -7,9 +7,18 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass'
 import { getEvent } from 'libs/mouse-event'
 
+import gradientVert from 'shaders/gradient.frag'
+import gradientFrag from 'shaders/gradient.frag'
+
+console.log(gradientVert)
+
 function enableShadow(obj){
 	obj.castShadow = true
 	obj.children.forEach(enableShadow)
+}
+
+function toColor (color){
+	return new THREE.Color('0x' + color.substring(1).toLowerCase())
 }
 
 export default function WebGLViewer(){
@@ -37,8 +46,6 @@ export default function WebGLViewer(){
 		const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1, 0, 0.8)
 		renderer.addPass( bloomPass );
 
-		
-
 		const light = new THREE.AmbientLight( 0xffffff);
 		const directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
 		directionalLight.position.set(0.5, 1, 0.7)
@@ -50,6 +57,22 @@ export default function WebGLViewer(){
 		directionalLight.shadow.camera.far = 500; // default
 
 		scene.add( light, directionalLight );
+
+		const material = new THREE.ShaderMaterial( {
+				uniforms: {
+					uColorA: { value: toColor("#E3B1B0") },
+					uColorB: { value: toColor("#6558C1") }
+				},
+				vertexShader: gradientVert,
+				fragmentShader: gradientFrag
+			} 
+		);
+
+
+		const myGradient = new THREE.Mesh( new THREE.BoxGeometry( 2, 2, 2 ), material );
+		myGradient.material.depthWrite = false
+		myGradient.renderOrder = -99999
+		scene.add(myGradient)
 		
 		setState({ renderer, camera, scene })
 		
